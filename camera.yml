@@ -1,0 +1,23 @@
+---
+# camera
+- hosts: camera
+  tasks:
+  - include: password.yml
+
+  - name: rabbitmq
+    apt: pkg=rabbitmq-server state=installed
+
+  - rabbitmq_user: user=pi
+                 password={{password}}
+                 vhost=/
+                 configure_priv=.*
+                 read_priv=.*
+                 write_priv=.*
+                 state=present
+
+  - ufw: rule=allow src=192.231.113.231
+
+  - name: bundle ruby gems
+    gem: name=RubySunrise state=latest
+
+  - gem: name=bunny state=latest
