@@ -1,0 +1,18 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    RubySunrise (0.3)
+      tzinfo
+    amq-protocol (1.9.2)
+    bunny (1.7.0)
+      amq-protocol (>= 1.9.2)
+    thread_safe (0.3.4)
+    tzinfo (1.2.1)
+      thread_safe (~> 0.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  RubySunrise
+  bunny
