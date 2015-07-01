@@ -5,7 +5,8 @@
   - name: rabbitmq
     apt: pkg=rabbitmq-server state=installed
 
-  - authorized_key: user={{ ansible_ssh_user}} key="{{ lookup('file', './id_rsa.pub') }}"
+  - authorized_key: user={{ ansible_ssh_user}} key="{{ lookup('file', './phenology.pub') }}"
+  - authorized_key: user={{ ansible_ssh_user}} key="{{ lookup('file', './granby.pub') }}"
 
   - include_vars: password.yml
   - rabbitmq_user: user=pi
