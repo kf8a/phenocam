@@ -1,28 +1,40 @@
 require 'solareventcalculator'
-require "bunny"
+require "amqp"
+require 'json'
 
-calc = SolarEventCalculator.new(Date.today, BigDecimal.new("42.41015"), BigDecimal.new("-85.368576"))
+def take_picture
+  calc = SolarEventCalculator.new(Date.today, BigDecimal.new("42.41015"), BigDecimal.new("-85.368576"))
 
-plot = ARGV[0]
-at = Time.now
+  plot = 'g2' #ARGV[0]
+  rotation = '0' #ARGV[1]
+  at = Time.now
+  file_path = "images/#{plot}-#{at.strftime('%Y-%m-%dT%H-%M-%S')}.jpg"
 
-if calc.compute_official_sunrise('America/New_York') > DateTime.now  && DateTime.now < calc.compute_official_sunset('America/New_York')
-  # Start a communication session with RabbitMQ
-  conn = Bunny.new
-  conn.start
+  if calc.compute_official_sunrise('America/New_York') < DateTime.now  && DateTime.now < calc.compute_official_sunset('America/New_York')
+    cmd = system "raspistill -awb off -awbg 1.4,1.5 -o #{file_path}"
+    if cmd
+      image = File.read(file_path) 
+      msg = {at: at, location: plot, file: "images/#{plot}-#{at}", image: image}
+      p msg
+      send_message(msg)
 
-  # open a channel
-  ch = conn.create_channel
+    end
+  end
+end
 
-  # declare a queue
-  q  = ch.queue("images")
 
-  cmd = "raspistill -rot 270 -awb off -awbg 1.4,1.5 -o images/#{plot}-#{at}.jpg"
-  `cmd`
+def send_message(message)
+  EventMachine.run do
+    connection = AMQP.connect(:host => '127.0.0.1')
+    channel    = AMQP::Channel.new(connection)
+    queue    = channel.queue("images", :durable => true)
+    exchange = channel.direct("")
 
-  msg = {at: now, location: plot, file: "images/#{plot}-#{at}"} 
-  # publish a message to the default exchange which then gets routed to this queue
-  q.publish(msg)
-
-  conn.stop
+    exchange.publish(message.to_yaml, :routing_key => queue.name, :persistent => true) do
+      connection.close { EventMachine.stop }
+    end
+  end
+end
+if __FILE__ == $0
+  take_picture
 end
