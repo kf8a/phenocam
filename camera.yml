@@ -10,6 +10,7 @@
   - authorized_key: user={{ ansible_ssh_user}} key="{{ lookup('file', './granby.pub') }}"
 
   - copy: src=camera.rb dest=/home/{{ansible_ssh_user}}/camera.rb 
+  - copy: src=Gemfile dest=/home/{{ansible_ssh_user}}/Gemfile
 
   - include_vars: password.yml
   - rabbitmq_user: user=pi
