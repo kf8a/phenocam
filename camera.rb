@@ -11,7 +11,7 @@ def take_picture
   file_path = "images/#{plot}-#{at.strftime('%Y-%m-%dT%H-%M-%S')}.jpg"
 
   if calc.compute_official_sunrise('America/New_York') < DateTime.now  && DateTime.now < calc.compute_official_sunset('America/New_York')
-    cmd = system "raspistill -awb off -awbg 1.4,1.5 -o #{file_path}"
+    cmd = system "raspistill -rot #{rotation} -awb off -awbg 1.4,1.5 -o #{file_path}"
     if cmd
       image = File.read(file_path) 
       msg = {at: at, location: plot, file: "images/#{plot}-#{at}", image: image}
