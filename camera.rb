@@ -15,9 +15,8 @@ def take_picture
     if cmd
       image = File.read(file_path) 
       msg = {at: at, location: plot, file: "images/#{plot}-#{at}", image: image}
-      p msg
       send_message(msg)
-
+      File.unlink(file_path)
     end
   end
 end
