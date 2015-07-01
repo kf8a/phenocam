@@ -2,11 +2,12 @@
 # camera
 - hosts: camera
   tasks:
-  - include: password.yml
-
   - name: rabbitmq
     apt: pkg=rabbitmq-server state=installed
 
+  - authorized_key: user={{ ansible_ssh_user}} key="{{ lookup('file', './id_rsa.pub') }}"
+
+  - include_vars: password.yml
   - rabbitmq_user: user=pi
                  password={{password}}
                  vhost=/
@@ -16,6 +17,7 @@
                  state=present
 
   - ufw: rule=allow src=192.231.113.231
+
 
   - name: bundle ruby gems
     gem: name=RubySunrise state=latest
