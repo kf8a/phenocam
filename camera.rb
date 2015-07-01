@@ -20,7 +20,7 @@ if calc.compute_official_sunrise('America/New_York') > DateTime.now  && DateTime
   cmd = "raspistill -rot 270 -awb off -awbg 1.4,1.5 -o images/#{plot}-#{at}.jpg"
   `cmd`
 
-  msg = {at: now, file: "images/#{plot}-#{at}"} 
+  msg = {at: now, location: plot, file: "images/#{plot}-#{at}"} 
   # publish a message to the default exchange which then gets routed to this queue
   q.publish(msg)
 
