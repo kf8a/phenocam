@@ -1,6 +1,6 @@
 require 'solareventcalculator'
 require "amqp"
-require 'json'
+require 'yaml'
 
 def take_picture
   calc = SolarEventCalculator.new(Date.today, BigDecimal.new("42.41015"), BigDecimal.new("-85.368576"))
