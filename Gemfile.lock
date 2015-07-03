@@ -8,7 +8,6 @@ GEM
       amq-protocol (>= 1.9.2)
       eventmachine
     eventmachine (1.0.7)
-    json (1.8.3)
     thread_safe (0.3.4)
     tzinfo (1.2.1)
       thread_safe (~> 0.1)
@@ -19,4 +18,3 @@ PLATFORMS
 DEPENDENCIES
   RubySunrise
   amqp
-  json
