@@ -2,16 +2,18 @@ require 'amqp'
 require 'yaml'
 
 EventMachine.run do 
-  connection = AMQP.connect(host: '35.13.12.151', user: 'pi', password: 'phenology')
+  camera = '24.13.12.151'
+  connection = AMQP.connect(host: camera, user: 'pi', password: 'phenology')
 
   channel  = AMQP::Channel.new(connection)
   queue    = channel.queue("images", :durable => true)
-  exchange = channel.direct("")
 
   queue.subscribe(:ack => true) do |metadata, payload|
     data = YAML.load(payload)
     p data
-    key = data.keys[0]
+    at, location, files  = data.keys
+    cmd = "rsync --remove-source #{camera}:#{files} #{files}"
+    metadata.ack
   end
 
 #  EventMachine.add_timer(30*58) { EventMachine.stop }
