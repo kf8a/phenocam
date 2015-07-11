@@ -10,11 +10,12 @@ EventMachine.run do
 
   queue.subscribe(:ack => true) do |metadata, payload|
     data = YAML.load(payload)
-    at, location, files  = data.keys
+    at, location, file  = data.keys
     year = at.year
-    cmd = "rsync --remove-source #{camera}:#{files} /var/www/phenology/phencoam/#{year}/#{files}"
+    cmd = "rsync --remove-source #{camera}:#{files} /var/www/phenology/phencoam/#{year}/#{file}"
     metadata.ack if system(cmd) 
-    
+    File.unlink("/var/www/phenology/phenocam/#{location}-current.jpg")
+    File.symlink("/var/www/phenology/phenocam/#{year}/#{file}", "/var/www/phenology/phenocam/#{location}-current.jpg")
   end
 
 #  EventMachine.add_timer(30*58) { EventMachine.stop }
