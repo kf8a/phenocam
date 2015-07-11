@@ -6,13 +6,16 @@ EventMachine.run do
   connection = AMQP.connect(host: camera, user: 'pi', password: 'phenology')
 
   channel  = AMQP::Channel.new(connection)
-  queue    = channel.queue("images", :durable => true)
+  queue    = channel.queue("images2", :durable => true)
 
   queue.subscribe(:ack => true) do |metadata, payload|
     data = YAML.load(payload)
-    at, location, file  = data.keys
+    at = DateTime.parse(data[:at])
+    location =data[:location]
+    file = data[:file]
+    local_file = file.gsub(/images\/,"")
     year = at.year
-    cmd = "rsync --remove-source #{camera}:#{files} /var/www/phenology/phencoam/#{year}/#{file}"
+    cmd = "rsync --remove-source-files #{camera}:#{file} /var/www/phenology/phenocam/#{year}/#{file}"
     metadata.ack if system(cmd) 
     File.unlink("/var/www/phenology/phenocam/#{location}-current.jpg")
     File.symlink("/var/www/phenology/phenocam/#{year}/#{file}", "/var/www/phenology/phenocam/#{location}-current.jpg")
