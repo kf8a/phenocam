@@ -7,7 +7,7 @@ def take_picture
 
   plot = 'g2' #ARGV[0]
   rotation = '0' #ARGV[1]
-  at = Time.now.strptime("%Y-%m-%dT%H%M:%S%")
+  at = Time.now.strftime("%Y-%m-%dT%H:%M:%S%")
   file_path = "images/#{plot}-#{at}.jpg"
 
   if calc.compute_official_sunrise('America/New_York') < DateTime.now  && DateTime.now < calc.compute_official_sunset('America/New_York')
