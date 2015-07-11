@@ -10,10 +10,11 @@ EventMachine.run do
 
   queue.subscribe(:ack => true) do |metadata, payload|
     data = YAML.load(payload)
-    p data
     at, location, files  = data.keys
-    cmd = "rsync --remove-source #{camera}:#{files} #{files}"
-    metadata.ack
+    year = at.year
+    cmd = "rsync --remove-source #{camera}:#{files} /var/www/phenology/phencoam/#{year}/#{files}"
+    metadata.ack if system(cmd) 
+    
   end
 
 #  EventMachine.add_timer(30*58) { EventMachine.stop }
