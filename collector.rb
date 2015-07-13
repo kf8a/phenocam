@@ -18,8 +18,12 @@ EventMachine.run do
       year = at.year
       cmd = "rsync --remove-source-files #{camera}:#{file} /var/www/phenology/phenocam/#{year}/#{file}"
       metadata.ack if system(cmd) 
-      File.unlink("/var/www/phenology/phenocam/#{location}-current.jpg")
-      File.symlink("/var/www/phenology/phenocam/#{year}/#{file}", "/var/www/phenology/phenocam/#{location}-current.jpg")
+
+      current_file_name = "/var/www/phenology/phenocam/#{location}-current.jpg"
+      if File.exists?(current_file)
+        File.unlink(current_file_name)
+      end
+      File.symlink("/var/www/phenology/phenocam/#{year}/#{file}", current_file_name)
     end
 
     #  EventMachine.add_timer(30*58) { EventMachine.stop }

@@ -24,7 +24,7 @@ def send_message(message)
   EventMachine.run do
     connection = AMQP.connect(:host => '127.0.0.1')
     channel    = AMQP::Channel.new(connection)
-    queue    = channel.queue("images", :durable => true)
+    queue    = channel.queue("images2", :durable => true)
     exchange = channel.direct("")
 
     exchange.publish(message.to_yaml, :routing_key => queue.name, :persistent => true) do
