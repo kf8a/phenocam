@@ -5,15 +5,15 @@ require 'yaml'
 def take_picture
   calc = SolarEventCalculator.new(Date.today, BigDecimal.new("42.41015"), BigDecimal.new("-85.368576"))
 
-  plot = 'g2' #ARGV[0]
-  rotation = '0' #ARGV[1]
+  plot = 'g1' #ARGV[0]
+  rotation = '270' #ARGV[1]
   at = Time.now.strftime("%Y-%m-%dT%H:%M:%S")
   file_path = "images/#{plot}-#{at}.jpg"
 
   if calc.compute_official_sunrise('America/New_York') < DateTime.now  && DateTime.now < calc.compute_official_sunset('America/New_York')
     cmd = system "raspistill -rot #{rotation} -awb off -awbg 1.4,1.5 -o #{file_path}"
     if cmd
-      msg = {at: at, location: plot, file:  file_path}
+      msg = {at: at, location: plot, file: file_path}
       send_message(msg)
     end
   end
