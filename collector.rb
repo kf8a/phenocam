@@ -1,6 +1,7 @@
 require 'amqp'
 require 'yaml'
-
+require 'json'
+require 'open-uri'
 
 def collect_data(camera)
   connection = AMQP.connect(host: camera, user: 'pi', password: 'phenology')
@@ -33,10 +34,10 @@ def collect_data(camera)
 end
 
 EventMachine.run do 
-  #  sleep 3 * 60
-  cameras = ['35.13.12.151', '35.13.15.44']
+  cameras = JSON.parse(open('http://oshtemo.kbs.msu.edu:8080/status').read)
   cameras.each do |camera|
-    collect_data(camera)
+    ip =  camera[1]["ip"]
+    collect_data(ip)
   end
 
   EventMachine.add_timer(5*60) { EventMachine.stop }
