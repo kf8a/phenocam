@@ -51,4 +51,4 @@ cameras.each do |camera|
   collect_data(ip)
 end
 
-sleep(10*60)
+sleep(30*60)
