@@ -15,7 +15,7 @@ def take_picture
     cmd = system "raspistill -rot #{rotation} -awb off -awbg 1.4,1.5 -o #{file_path}"
     if cmd
       msg = {at: at, location: plot, file: file_path}
-      send_message_with_bunny(msg)
+      send_message(msg)
     end
   end
 end
