@@ -1,6 +1,7 @@
 require 'solareventcalculator'
 require "amqp"
 require 'yaml'
+require 'bunny'
 
 def take_picture
   calc = SolarEventCalculator.new(Date.today, BigDecimal.new("42.41015"), BigDecimal.new("-85.368576"))
@@ -14,7 +15,7 @@ def take_picture
     cmd = system "raspistill -rot #{rotation} -awb off -awbg 1.4,1.5 -o #{file_path}"
     if cmd
       msg = {at: at, location: plot, file: file_path}
-      send_message(msg)
+      send_message_with_bunny(msg)
     end
   end
 end
@@ -32,6 +33,15 @@ def send_message(message)
     end
   end
 end
+
+def send_message_with_bunny(message)
+  conn = Bunny.new
+  channel = conn.create_channel
+  queue = channel.queue("images2", durable: true)
+  queue.publish(message.to_yaml)
+  conn.stop
+end
+
 if __FILE__ == $0
   take_picture
 end
