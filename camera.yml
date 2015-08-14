@@ -5,11 +5,13 @@
   - name: rabbitmq
     apt: pkg=rabbitmq-server state=latest
   - apt: pkg=ruby-dev state=latest
+  - apt: pkg=ufw state=latest
 
   - authorized_key: user={{ ansible_ssh_user}} key="{{ lookup('file', './phenology.pub') }}"
   - authorized_key: user={{ ansible_ssh_user}} key="{{ lookup('file', './granby.pub') }}"
 
   - copy: src=camera.rb dest=/home/{{ansible_ssh_user}}/camera.rb 
+  - copy: src=night.rb dest=/home/{{ansible_ssh_user}}/night.rb 
   - copy: src=Gemfile dest=/home/{{ansible_ssh_user}}/Gemfile
 
   - include_vars: password.yml
@@ -23,8 +25,9 @@
 
   - ufw: rule=allow src=192.231.113.231
 
+  - gem: name=RubySunrise state=installed
+  - gem: name=amqp state=installed
+  - gem: name=tzinfo state=installed
 
-  - name: bundle ruby gems
-    gem: name=RubySunrise state=latest
-
-  - gem: name=bunny state=latest
+# create images directory
+# add stuff to crontab
