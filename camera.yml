@@ -2,15 +2,19 @@
 # camera
 - hosts: camera
   tasks:
-  - name: rabbitmq
-    apt: pkg=rabbitmq-server state=latest
-  - apt: pkg=ruby-dev state=latest
-  - apt: pkg=ufw state=latest
+  # - apt: update_cache=yes cache_valid_time=3600
+  # - apt: upgrade=dist
+  # - apt: pkg=rabbitmq-server state=latest
+  # - apt: pkg=ruby,ruby-dev,bundler state=latest
+  # - apt: pkg=tmux state=latest
+  # - apt: pkg=ntpdate state=latest
+  # - apt: pkg=ufw state=latest
 
   - authorized_key: user={{ ansible_ssh_user}} key="{{ lookup('file', './phenology.pub') }}"
   - authorized_key: user={{ ansible_ssh_user}} key="{{ lookup('file', './granby.pub') }}"
 
   - copy: src=camera.rb dest=/home/{{ansible_ssh_user}}/camera.rb 
+  - copy: src=camera.sh dest=/home/{{ansible_ssh_user}}/camera.sh
   - copy: src=night.rb dest=/home/{{ansible_ssh_user}}/night.rb 
   - copy: src=Gemfile dest=/home/{{ansible_ssh_user}}/Gemfile
 
@@ -23,11 +27,15 @@
                  write_priv=.*
                  state=present
 
+  - ufw: rule=allow port=22
   - ufw: rule=allow src=192.231.113.231
+  - ufw: logging=off
+  - ufw: state=enabled
 
-  - gem: name=RubySunrise state=installed
-  - gem: name=amqp state=installed
-  - gem: name=tzinfo state=installed
+  # - gem: name=RubySunrise state=latest user_install=no 
+  # - gem: name=amq-protocol state=latest user_install=no version=1.9
+  # - gem: name=amqp state=latest user_install=no
+  # - gem: name=tzinfo state=latest user_install=no
 
 # create images directory
 # add stuff to crontab
