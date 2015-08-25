@@ -29,6 +29,7 @@
 
   - ufw: rule=allow port=22
   - ufw: rule=allow src=192.231.113.231
+  - ufw: rule=allow src=192.231.113.218 port=9100 
   - ufw: logging=off
   - ufw: state=enabled
 
