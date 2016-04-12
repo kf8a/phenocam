@@ -2,64 +2,64 @@
 # camera
 - hosts: camera
   tasks:
-  # - name: update cache
-  #   apt: update_cache=yes cache_valid_time=3600
-  # - name: update system
-  #   apt: upgrade=dist
-  #
-  # - name: ensure pre-requisites are installed
-  #   apt: pkg={{item}} state=latest
-  #   with_items:
-  #     - "rabbitmq-server"
-  #     - "ruby"
-  #     - "ruby-dev"
-  #     - "bundler"
-  #     - "tmux"
-  #     - "ntpdate"
-  #     - "ufw"
-  #
-  # # - authorized_key: user={{ ansible_ssh_user}} key="{{ lookup('file', './phenology.pub') }}"
-  # # - authorized_key: user={{ ansible_ssh_user}} key="{{ lookup('file', './granby.pub') }}"
-  #
-  # - name: copy camera files
-  #   copy: src={{ item }} dest=/home/{{ansible_ssh_user}}/{{ item }}camera.rb }}
-  #   with_items:
-  #     - "camera.rb"
-  #     - "camera.sh"
-  #     - "night.rb"
-  #     - "Gemfile"
-  #
-  # - include_vars: password.yml
-  # - rabbitmq_user: user=pi
-  #                password={{password}}
-  #                vhost=/
-  #                configure_priv=.*
-  #                read_priv=.*
-  #                write_priv=.*
-  #                state=present
-  #
-  # - name: allow ssh in ufw firewall
-  #   ufw: rule=allow port=22
-  # - name: configure allowed access
-  #   ufw: rule=allow src={{item}}
-  #   with_items:
-  #     - 192.231.113.231
-  #     - 192.108.188.184
-  #     - 192.231.113.159
-  #     - 192.231.113.218
-  #
-  # - name: turn uwf logging off
-  #   ufw: logging=off
-  # - name: enable firewall
-  #   ufw: state=enabled
-  #
-  # - name: install gems
-  #   gem: name={{item}} state=latest user_install=no 
-  #   with_items:
-  #     - "RubySunrise"
-  #     - "amq-protocol"
-  #     - "amqp"
-  #     - "tzinfo"
+  - name: update cache
+    apt: update_cache=yes cache_valid_time=3600
+  - name: update system
+    apt: upgrade=dist
+
+  - name: ensure pre-requisites are installed
+    apt: pkg={{item}} state=latest
+    with_items:
+      - "rabbitmq-server"
+      - "ruby"
+      - "ruby-dev"
+      - "bundler"
+      - "tmux"
+      - "ntpdate"
+      - "ufw"
+
+  # - authorized_key: user={{ ansible_ssh_user}} key="{{ lookup('file', './phenology.pub') }}"
+  # - authorized_key: user={{ ansible_ssh_user}} key="{{ lookup('file', './granby.pub') }}"
+
+  - name: copy camera files
+    copy: src={{ item }} dest=/home/{{ansible_ssh_user}}/{{ item }}camera.rb }}
+    with_items:
+      - "camera.rb"
+      - "camera.sh"
+      - "night.rb"
+      - "Gemfile"
+
+  - include_vars: password.yml
+  - rabbitmq_user: user=pi
+                 password={{password}}
+                 vhost=/
+                 configure_priv=.*
+                 read_priv=.*
+                 write_priv=.*
+                 state=present
+
+  - name: allow ssh in ufw firewall
+    ufw: rule=allow port=22
+  - name: configure allowed access
+    ufw: rule=allow src={{item}}
+    with_items:
+      - 192.231.113.231
+      - 192.108.188.184
+      - 192.231.113.159
+      - 192.231.113.218
+
+  - name: turn uwf logging off
+    ufw: logging=off
+  - name: enable firewall
+    ufw: state=enabled
+
+  - name: install gems
+    gem: name={{item}} state=latest user_install=no 
+    with_items:
+      - "RubySunrise"
+      - "amq-protocol"
+      - "amqp"
+      - "tzinfo"
 
   # create images directory
   # add stuff to crontab
