@@ -6,16 +6,17 @@
     apt: update_cache=yes cache_valid_time=3600
   - name: update system
     apt: upgrade=dist
-  - name: ensure rabbitmq server is installed
-    apt: pkg=rabbitmq-server state=latest
-  - name: ensure ruby is installed
-    apt: pkg=ruby,ruby-dev,bundler state=latest
-  - name: ensure tmux is installed
-    apt: pkg=tmux state=latest
-  - name: ensure ntpdate is installed
-    apt: pkg=ntpdate state=latest
-  - name: ensure ufw is installed
-    apt: pkg=ufw state=latest
+
+  - name: ensure pre-requisites are installed
+    apt: pkg={{item}} state=latest
+    with_items:
+      - "rabbitmq-server"
+      - "ruby"
+      - "ruby-dev"
+      - "bundler"
+      - "tmux"
+      - "ntpdate"
+      - "ufw"
 
   # - authorized_key: user={{ ansible_ssh_user}} key="{{ lookup('file', './phenology.pub') }}"
   # - authorized_key: user={{ ansible_ssh_user}} key="{{ lookup('file', './granby.pub') }}"
@@ -52,14 +53,13 @@
   - name: enable firewall
     ufw: state=enabled
 
-  - name: install RubySunrise gem
-    gem: name=RubySunrise state=latest user_install=no 
-  - name: install amq protocol gem
-    gem: name=amq-protocol state=latest user_install=no
-  - name: install amqp gem
-    gem: name=amqp state=latest user_install=no
-  - name: install tzinfo gem
-    gem: name=tzinfo state=latest user_install=no
+  - name: install gems
+    gem: name={{item}} state=latest user_install=no 
+    with_items:
+      - "RubySunrise"
+      - "amq-protocol"
+      - "amqp"
+      - "tzinfo"
 
   # create images directory
   # add stuff to crontab
